@@ -1,9 +1,8 @@
-rm(list = rm())
+rm(list = ls())
 options(scipen = 999)
 library(tidyverse)
 
 library(DESeq2)
-library(biomaRt)
 
 ## data
 # human
@@ -14,14 +13,6 @@ mouse_gene_mat <- read.table("mouse_readcounts.tsv")
 
 
 ## DESeq2 object
-# meta
-human_genes <- row.names(human_gene_mat)
-human_samples <- colnames(human_gene_mat)
-
-mouse_genes <- row.names(mouse_gene_mat)
-mouse_samples <- colnames(mouse_gene_mat)
-
-
 # convert to integer
 #count_mx <- apply(count_mx, 2, as.integer)
 #dimnames(count_mx) <- list(genes, samples)
@@ -48,7 +39,6 @@ all(colnames(mouse_gene_mat) == rownames(mouse_meta))
 human_dds <- DESeqDataSetFromMatrix(countData = human_gene_mat, colData = human_meta, design = ~ stage)
 
 mouse_dds <- DESeqDataSetFromMatrix(countData = mouse_gene_mat, colData = mouse_meta, design = ~ stage)
-
 
 
 ## DESeq2 normalization
