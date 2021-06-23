@@ -3,7 +3,6 @@ options(scipen = 999)
 library(tidyverse)
 
 library(DESeq2)
-library(biomaRt)
 
 ## read count (genes below cutoff removed)
 # huamn
