@@ -58,8 +58,10 @@ h_fgseaRes <- fgsea(pathways = pathways.all, h_ranks)
 h_fgseaResTidy <- h_fgseaRes %>%
     as_tibble() %>%
     arrange(desc(NES))
+save(h_fgseaResTidy, file = "human_fgseaResTidy.Rdata")
 
 m_fgseaRes <- fgsea(pathways = pathways.all, m_ranks)
 m_fgseaResTidy <- m_fgseaRes %>%
     as_tibble() %>%
     arrange(desc(NES))
+save(m_fgseaResTidy, file = "mouse_fgseaResTidy.Rdata")
