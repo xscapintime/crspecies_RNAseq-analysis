@@ -13,8 +13,8 @@ mouse_exp_mat <- read.table("mouse_select_rdcounts.tsv")
 
 
 ## set ensembl datasets
-human <- useMart("ensembl", dataset = "hsapiens_gene_ensembl")
-mouse <- useMart("ensembl", dataset = "mmusculus_gene_ensembl")
+human <- useEnsembl(biomart = "genes", dataset = "hsapiens_gene_ensembl")
+mouse <- useEnsembl(biomart = "genes", dataset = "mmusculus_gene_ensembl")
 
 ## list attributes
 listAttributes(human) %>% head
