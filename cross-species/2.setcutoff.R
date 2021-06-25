@@ -8,7 +8,7 @@ library(DESeq2)
 # human
 human_gene_mat <- read.table("human_readcounts.tsv")
 
-# moue
+# mouse
 mouse_gene_mat <- read.table("mouse_readcounts.tsv")
 
 
@@ -59,26 +59,26 @@ library(reshape2)
 human_maxexp <- setNames(aggregate(value ~ gene,
                         data = aggregate(value ~ gene + stage,
                         data = merge(setNames(melt(log2(1 + as.matrix(human_normalized_counts))),
-                        c("gene", "sample", "value")), human_meta, by.x="sample", by.y=0),
+                        c("gene", "sample", "value")), human_meta, by.x = "sample", by.y = 0),
                         FUN = mean), FUN = max), c("gene", "max_exp"))
 
 mouse_maxexp <- setNames(aggregate(value ~ gene,
                         data = aggregate(value ~ gene + stage,
                         data = merge(setNames(melt(log2(1 + as.matrix(mouse_normalized_counts))),
-                        c("gene", "sample", "value")), mouse_meta, by.x="sample", by.y=0),
+                        c("gene", "sample", "value")), mouse_meta, by.x = "sample", by.y = 0),
                         FUN = mean), FUN = max), c("gene", "max_exp"))
 
-hist(mouse_maxexp$max_exp)
 
-
-# minimum-expression-level cutoff using kernel density estimation ####
+# minimum-expression-level cutoff using kernel density estimation ####
 human_maxexp_density <- density(human_maxexp$max_exp)
+plot(human_maxexp_density)
 cutoff_human <- optimize(approxfun(human_maxexp_density$x, human_maxexp_density$y),
-                        interval = c(1, 10))$minimum
+                        interval = c(1, quantile(human_maxexp_density$x)[2]))$minimum
 
 mouse_maxexp_density <- density(mouse_maxexp$max_exp)
+plot(mouse_maxexp_density)
 cutoff_mouse <- optimize(approxfun(mouse_maxexp_density$x, mouse_maxexp_density$y),
-                        interval = c(1, 10))$minimum
+                        interval = c(1, quantile(mouse_maxexp_density$x)[2]))$minimum
 
 # remove genes below cutoff
 human_maxexp_genes <- human_maxexp$gene[which(human_maxexp$max_exp >= cutoff_human)]
