@@ -1,3 +1,5 @@
+# Predefined list of interesting gene
+
 rm(list = ls())
 options(scipen = 999)
 library(tidyverse)
@@ -12,6 +14,21 @@ human_res <- read.table("human_deg.tsv")
 mouse_res <- read.table("mouse_deg.tsv")
 
 
+## ensembl id and symble
+human_symbol <- read.table("human_idsyb.tsv")
+mouse_symbol_tohuman <- read.table("mouse_idsyb_mapped2hugo.tsv")
+
+
+## join deg table and symbol
+human_res_syb <- inner_join(human_res, human_symbol,
+                            by = c("row" = "ensembl_gene_id"))
+
+mouse_res_syb <- inner_join(mouse_res, mouse_symbol_tohuman,
+                            by = c("row" = "ensembl_gene_id"))
+
+
+
+##### ORA #####
 ## gene lists
 # universe lists
 human_res$de <- ifelse(abs(human_res$log2FoldChange) >= 2 &

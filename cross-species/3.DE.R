@@ -8,7 +8,7 @@ library(DESeq2)
 # huamn
 human_exp_mat <- read.table("human_select_rdcounts.tsv")
 
-# moue
+# mouse
 mouse_exp_mat <- read.table("mouse_select_rdcounts.tsv")
 
 
@@ -31,10 +31,10 @@ mouse_dds <- DESeqDataSetFromMatrix(countData = mouse_exp_mat, colData = mouse_m
 
 
 # DEG
-human_res <- results(DESeq(human_dds), tidy = TRUE)
+human_res <- results(DESeq(human_dds), contrast = c("stage", "arr", "8C"),
+                    tidy = TRUE)
 write.table(human_res, file = "human_deg.tsv", quote = F, sep = "\t")
 
-mouse_res <- results(DESeq(mouse_dds), tidy = TRUE)
+mouse_res <- results(DESeq(mouse_dds), contrast = c("stage", "E4.5", "dia"),
+                    tidy = TRUE)
 write.table(mouse_res, file = "mouse_deg.tsv", quote = F, sep = "\t")
-
-
