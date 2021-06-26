@@ -21,6 +21,7 @@
 *.docx
 *.Rdata
 *.gmt
+*.png
 
 doc/
 
