@@ -80,6 +80,36 @@ plot(mouse_maxexp_density)
 cutoff_mouse <- optimize(approxfun(mouse_maxexp_density$x, mouse_maxexp_density$y),
                         interval = c(1, quantile(mouse_maxexp_density$x)[2]))$minimum
 
+# density plot together
+library(ggplot2)
+
+dat <- rbind(human_maxexp, mouse_maxexp)
+dat$species <- factor(c(rep("human", each = nrow(human_maxexp)),
+                        rep("mouse", each = nrow(mouse_maxexp))))
+
+theme_set(
+    theme_bw() +
+    theme(legend.position = "right")
+)
+
+p <- ggplot(dat, aes(x = max_exp))
+p + geom_density(aes(group = species, fill = species), size = .6, alpha = 0.6) +
+    scale_color_manual(values = c("#1a7bca", "#EFC000FF")) +
+    scale_fill_manual(values = c("#1a7bca", "#EFC000FF")) +
+    geom_vline(aes(xintercept = cutoff_human),  ## human
+                linetype = "dashed", size = 0.6, color = "#1a7bca") +
+    geom_text(aes(x = cutoff_human, y = 0.15,
+            label = paste0("Human cutoff: ", round(cutoff_human, 2)))) +
+    geom_vline(aes(xintercept = cutoff_mouse),  ## human
+                linetype = "dashed", size = 0.6, color = "#EFC000FF") +
+    geom_text(aes(x = cutoff_mouse, y = 0.1,
+            label = paste0("Mouse cutoff: ", round(cutoff_mouse, 2)))) +
+    xlab("Max normalized log2 expression")
+
+ggsave(filename = "figs/Max_normalized_log2expression_dens.png")
+
+
+
 # remove genes below cutoff
 human_maxexp_genes <- human_maxexp$gene[which(human_maxexp$max_exp >= cutoff_human)]
 human_exp_mat <- human_gene_mat[human_maxexp_genes, ]

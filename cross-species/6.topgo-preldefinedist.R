@@ -1,4 +1,5 @@
 # Predefined list of interesting gene
+# -------------ORA v1 ---------------
 
 rm(list = ls())
 options(scipen = 999)
@@ -6,6 +7,9 @@ library(tidyverse)
 
 #BiocManager::install("topGO")
 library(topGO)
+
+# annotated by biomart
+# --------------------
 library(biomaRt)
 
 
@@ -13,22 +17,9 @@ library(biomaRt)
 human_res <- read.table("human_deg.tsv")
 mouse_res <- read.table("mouse_deg.tsv")
 
+# remove NA p-val genes in mouse data
+mouse_res <- mouse_res %>% na.omit()
 
-## ensembl id and symble
-human_symbol <- read.table("human_idsyb.tsv")
-mouse_symbol_tohuman <- read.table("mouse_idsyb_mapped2hugo.tsv")
-
-
-## join deg table and symbol
-human_res_syb <- inner_join(human_res, human_symbol,
-                            by = c("row" = "ensembl_gene_id"))
-
-mouse_res_syb <- inner_join(mouse_res, mouse_symbol_tohuman,
-                            by = c("row" = "ensembl_gene_id"))
-
-
-
-##### ORA #####
 ## gene lists
 # universe lists
 human_res$de <- ifelse(abs(human_res$log2FoldChange) >= 2 &
@@ -71,12 +62,14 @@ m_gene2GO <- unstack(mouse_go_id[, c(2, 1)])
 # BP
 human_GOdata <- new("topGOdata",
                     ontology = "BP",
+                    description = "human, biomart, predefined genelist"
                     allGenes = human_universe,
                     annot = annFUN.gene2GO,
                     gene2GO = h_gene2GO)
 
 mouse_GOdata <- new("topGOdata",
                     ontology = "BP",
+                    description = "mouse, biomart, predefined genelist",
                     allGenes = mouse_universe,
                     annot = annFUN.gene2GO,
                     gene2GO = m_gene2GO)
@@ -163,3 +156,19 @@ unique(mouse_go_id3$entrezgene_id) %>% length
 
 #### org.Mm.eg.db
 library(org.Mm.eg.db)
+
+
+
+
+### no use?
+## ensembl id and symble
+human_symbol <- read.table("human_idsyb.tsv")
+mouse_symbol_tohuman <- read.table("mouse_idsyb_mapped2hugo.tsv")
+
+
+## join deg table and symbol
+human_res_syb <- inner_join(human_res, human_symbol,
+                            by = c("row" = "ensembl_gene_id"))
+
+mouse_res_syb <- inner_join(mouse_res, mouse_symbol_tohuman,
+                            by = c("row" = "ensembl_gene_id"))
