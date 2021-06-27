@@ -11,6 +11,10 @@ library(fgsea)
 human_res <- read.table("human_deg.tsv")
 mouse_res <- read.table("mouse_deg.tsv")
 
+# need remove NA pval/qval genes
+human_res <- human_res %>% na.omit()
+mouse_res <- mouse_res %>% na.omit()
+
 
 ## ensembl id and symble
 human_symbol <- read.table("human_idsyb.tsv")
