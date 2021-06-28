@@ -1,3 +1,8 @@
+# use org package to do GO annotation
+# -----------------------------------
+# biomart feels better?
+
+
 rm(list = ls())
 options(scipen = 999)
 library(tidyverse)
