@@ -1,6 +1,7 @@
 rm(list = ls())
 #options(scipen = 999)
 library(tidyverse)
+library(reshape2)
 
 library(DESeq2)
 
@@ -10,6 +11,36 @@ human_exp_mat <- read.table("human_select_rdcounts.tsv")
 
 # mouse
 mouse_exp_mat <- read.table("mouse_select_rdcounts.tsv")
+
+
+
+## only keep the homology/orthology? PAIRS
+human_symbol <- read.table("human_idsyb.tsv")
+mouse_symbol_tohuman <- read.table("mouse_idsyb_mapped2hugo.tsv")
+
+index <- inner_join(human_symbol, mouse_symbol_tohuman, by = c("hgnc_symbol" = "hsapiens_homolog_associated_gene_name"))
+
+human_exp_mat$id <- row.names(human_exp_mat)
+human_exp_mat <- inner_join(human_exp_mat, index, by = c("id" = "ensembl_gene_id.x"))
+
+tolong <- melt(human_exp_mat)
+
+#tapply(human_exp_mat[, 1:28], INDEX = human_exp_mat$hgnc_symbol, FUN = mean)
+
+tolong <- tolong %>%
+        dplyr::select(id, hgnc_symbol, variable, value) %>%
+        na.omit() %>%
+        distinct() %>%
+        group_by(hgnc_symbol, variable, id) %>%
+        summarize(value = mean(value))
+
+test <- dcast(tolong, id ~ variable, value.var = "value")
+
+human_exp_mat <- human_exp_mat[index$ensembl_gene_id.x, ]
+
+overlap_m <- mouse_symbol_tohuman %>% filter(hsapiens_homolog_associated_gene_name %in% overlap)
+mouse_exp_mat <- mouse_exp_mat[overlap_m$ensembl_gene_id, ]
+
 
 
 ## DEG
@@ -35,7 +66,7 @@ human_dds <- estimateSizeFactors(human_dds)
 mouse_dds <- estimateSizeFactors(mouse_dds)
 
 
-filterh <- rowSums(counts(human_dds, normalized = TRUE)) > 0
+filter_h <- rowSums(counts(human_dds, normalized = TRUE)) > 0
 table(filter_h)
 # filter_h
 #  TRUE
@@ -43,25 +74,13 @@ table(filter_h)
 human_dds <- human_dds[filter_h, ]
 
 
-filterm <- rowSums(counts(mouse_dds, normalized = TRUE)) > 0
+filter_m <- rowSums(counts(mouse_dds, normalized = TRUE)) > 0
 table(filter_m)
 # filter_m
 #  TRUE
 # 10783
 mouse_dds <- mouse_dds[filter_m, ]
 
-
-# only keep the homology/orthology? PAIRS
-human_symbol <- read.table("human_idsyb.tsv")
-mouse_symbol_tohuman <- read.table("mouse_idsyb_mapped2hugo.tsv")
-
-overlap <- intersect(human_symbol$hgnc_symbol, mouse_symbol_tohuman$hsapiens_homolog_associated_gene_name)
-
-overlap_h <- human_symbol %>% filter(hgnc_symbol %in% overlap)
-human_dds <- human_dds[overlap_h$ensembl_gene_id, ]
-
-overlap_m <- mouse_symbol_tohuman %>% filter(hsapiens_homolog_associated_gene_name %in% overlap)
-mouse_dds <- mouse_dds[overlap_m$ensembl_gene_id, ]
 
 
 # DEG
