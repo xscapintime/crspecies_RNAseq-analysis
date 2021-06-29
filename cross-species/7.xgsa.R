@@ -21,7 +21,7 @@ library(xgsa)
 human_res <- read.table("human_deg.tsv")
 
 # select some genes
-human_de_genes <- human_res %>% filter(padj < 0.01) %>% dplyr::select(row) %>% deframe()
+human_de_genes <- human_res %>% filter(padj < 0.01 & log2FoldChange > 2) %>% dplyr::select(row) %>% deframe()
 
 # gene universe, ensembl id and symbol
 human_ensembl_symbol_map <- get_ENSEMBL_symbol_map(species = "hsapiens")
