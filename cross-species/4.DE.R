@@ -1,5 +1,5 @@
 rm(list = ls())
-options(scipen = 999)
+#options(scipen = 999)
 library(tidyverse)
 
 library(DESeq2)
@@ -30,11 +30,45 @@ human_dds <- DESeqDataSetFromMatrix(countData = human_exp_mat, colData = human_m
 mouse_dds <- DESeqDataSetFromMatrix(countData = mouse_exp_mat, colData = mouse_meta, design = ~ stage)
 
 
+# filter
+human_dds <- estimateSizeFactors(human_dds)
+mouse_dds <- estimateSizeFactors(mouse_dds)
+
+
+filterh <- rowSums(counts(human_dds, normalized = TRUE)) > 0
+table(filter_h)
+# filter_h
+#  TRUE
+# 15523
+human_dds <- human_dds[filter_h, ]
+
+
+filterm <- rowSums(counts(mouse_dds, normalized = TRUE)) > 0
+table(filter_m)
+# filter_m
+#  TRUE
+# 10783
+mouse_dds <- mouse_dds[filter_m, ]
+
+
+# only keep the homology/orthology? PAIRS
+human_symbol <- read.table("human_idsyb.tsv")
+mouse_symbol_tohuman <- read.table("mouse_idsyb_mapped2hugo.tsv")
+
+overlap <- intersect(human_symbol$hgnc_symbol, mouse_symbol_tohuman$hsapiens_homolog_associated_gene_name)
+
+overlap_h <- human_symbol %>% filter(hgnc_symbol %in% overlap)
+human_dds <- human_dds[overlap_h$ensembl_gene_id, ]
+
+overlap_m <- mouse_symbol_tohuman %>% filter(hsapiens_homolog_associated_gene_name %in% overlap)
+mouse_dds <- mouse_dds[overlap_m$ensembl_gene_id, ]
+
+
 # DEG
 human_res <- results(DESeq(human_dds), contrast = c("stage", "arr", "8C"),
                     tidy = TRUE)
 write.table(human_res, file = "human_deg.tsv", quote = F, sep = "\t")
 
-mouse_res <- results(DESeq(mouse_dds), contrast = c("stage", "E4.5", "dia"),
-                    tidy = TRUE)
+mouse_res2 <- results(DESeq(mouse_dds), contrast = c("stage", "E4.5", "dia"),
+                    tidy = TRUE, independentFiltering = F)
 write.table(mouse_res, file = "mouse_deg.tsv", quote = F, sep = "\t")
