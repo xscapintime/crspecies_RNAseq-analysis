@@ -1,5 +1,5 @@
 rm(list = ls())
-options(scipen = 999)
+#options(scipen = 999)
 library(tidyverse)
 
 ## fgsea to do GSEA
@@ -15,36 +15,39 @@ mouse_res <- read.table("mouse_deg.tsv")
 human_res <- human_res %>% na.omit()
 mouse_res <- mouse_res %>% na.omit()
 
+# NA pval in mouse data, make them be in the same length
+human_res <- human_res %>% filter(row %in% mouse_res$row)
+
 
 ## ensembl id and symble
-human_symbol <- read.table("human_idsyb.tsv")
-mouse_symbol_tohuman <- read.table("mouse_idsyb_mapped2hugo.tsv")
+# human_symbol <- read.table("human_idsyb.tsv")
+# mouse_symbol_tohuman <- read.table("mouse_idsyb_mapped2hugo.tsv")
 
 
-## join deg table and symbol
-human_res_syb <- inner_join(human_res, human_symbol,
-                            by = c("row" = "ensembl_gene_id"))
+# ## join deg table and symbol
+# human_res_syb <- inner_join(human_res, human_symbol,
+#                             by = c("row" = "ensembl_gene_id"))
 
-mouse_res_syb <- inner_join(mouse_res, mouse_symbol_tohuman,
-                            by = c("row" = "ensembl_gene_id"))
+# mouse_res_syb <- inner_join(mouse_res, mouse_symbol_tohuman,
+#                             by = c("row" = "ensembl_gene_id"))
 
 
 ## ranked list (ranked by stat, Wald statistic)
-human_stat <- human_res_syb %>%
-        dplyr::select(hgnc_symbol, stat) %>%
+human_stat <- human_res %>%
+        dplyr::select(row, stat) %>%
         na.omit() %>%
         distinct() %>%
-        group_by(hgnc_symbol) %>%
+        group_by(row) %>%
         summarize(stat = mean(stat))
 h_ranks <- deframe(human_stat)
 barplot(sort(h_ranks, decreasing = T))
 
 
-mouse_stat <- mouse_res_syb %>%
-        dplyr::select(hsapiens_homolog_associated_gene_name, stat) %>%
+mouse_stat <- mouse_res %>%
+        dplyr::select(row, stat) %>%
         na.omit() %>%
         distinct() %>%
-        group_by(hsapiens_homolog_associated_gene_name) %>%
+        group_by(row) %>%
         summarize(stat = mean(stat))
 m_ranks <- deframe(mouse_stat)
 barplot(sort(m_ranks, decreasing = T))

@@ -57,10 +57,15 @@ row.names(mouse_meta) <- colnames(mouse_exp_mat)[2:6]
 
 # Create DESeq2Dataset object
 human_dat <- sapply(human_exp_mat[, 2:29], as.integer)
+row.names(human_dat) <- human_exp_mat$hgnc_symbol
 
-human_dds <- DESeqDataSetFromMatrix(countData = human_exp_mat[, 2:29], colData = human_meta, design = ~ stage)
+mouse_dat <- sapply(mouse_exp_mat[, 2:6], as.integer)
+row.names(mouse_dat) <- mouse_exp_mat$hgnc_symbol
 
-mouse_dds <- DESeqDataSetFromMatrix(countData = mouse_exp_mat[, 2:6], colData = mouse_meta, design = ~ stage)
+
+human_dds <- DESeqDataSetFromMatrix(countData = human_dat, colData = human_meta, design = ~ stage)
+
+mouse_dds <- DESeqDataSetFromMatrix(countData = mouse_dat, colData = mouse_meta, design = ~ stage)
 
 
 # filter
@@ -87,9 +92,9 @@ mouse_dds <- mouse_dds[filter_m, ]
 
 # DEG
 human_res <- results(DESeq(human_dds), contrast = c("stage", "arr", "8C"),
-                    tidy = TRUE)
+                    tidy = TRUE, independentFiltering = F)
 write.table(human_res, file = "human_deg.tsv", quote = F, sep = "\t")
 
-mouse_res2 <- results(DESeq(mouse_dds), contrast = c("stage", "E4.5", "dia"),
+mouse_res <- results(DESeq(mouse_dds), contrast = c("stage", "E4.5", "dia"),
                     tidy = TRUE, independentFiltering = F)
 write.table(mouse_res, file = "mouse_deg.tsv", quote = F, sep = "\t")
