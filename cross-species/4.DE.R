@@ -1,7 +1,6 @@
 rm(list = ls())
 #options(scipen = 999)
 library(tidyverse)
-library(reshape2)
 
 library(DESeq2)
 
@@ -19,27 +18,28 @@ human_symbol <- read.table("human_idsyb.tsv")
 mouse_symbol_tohuman <- read.table("mouse_idsyb_mapped2hugo.tsv")
 
 index <- inner_join(human_symbol, mouse_symbol_tohuman, by = c("hgnc_symbol" = "hsapiens_homolog_associated_gene_name"))
+write.table(index, file = "pairsidx.tsv", quote = F, sep = "\t")
 
+# human count matrix
 human_exp_mat$id <- row.names(human_exp_mat)
-human_exp_mat <- inner_join(human_exp_mat, index, by = c("id" = "ensembl_gene_id.x"))
+human_exp_mat <- inner_join(human_exp_mat, index[, 1:2], by = c("id" = "ensembl_gene_id.x"))
 
-tolong <- melt(human_exp_mat)
+human_exp_mat <- human_exp_mat[, -29] %>% group_by(hgnc_symbol) %>% summarise_all(mean)
 
-#tapply(human_exp_mat[, 1:28], INDEX = human_exp_mat$hgnc_symbol, FUN = mean)
+#human_exp_mat <- data.frame(human_exp_mat)
+human_exp_mat$id <- index$ensembl_gene_id.x[match(human_exp_mat$hgnc_symbol, index$hgnc_symbol)]
 
-tolong <- tolong %>%
-        dplyr::select(id, hgnc_symbol, variable, value) %>%
-        na.omit() %>%
-        distinct() %>%
-        group_by(hgnc_symbol, variable, id) %>%
-        summarize(value = mean(value))
 
-test <- dcast(tolong, id ~ variable, value.var = "value")
 
-human_exp_mat <- human_exp_mat[index$ensembl_gene_id.x, ]
+# mouse count matrix
+mouse_exp_mat$id <- row.names(mouse_exp_mat)
+mouse_exp_mat <- inner_join(mouse_exp_mat, index[, 2:3], by = c("id" = "ensembl_gene_id.y"))
 
-overlap_m <- mouse_symbol_tohuman %>% filter(hsapiens_homolog_associated_gene_name %in% overlap)
-mouse_exp_mat <- mouse_exp_mat[overlap_m$ensembl_gene_id, ]
+mouse_exp_mat <- mouse_exp_mat[, -6] %>% group_by(hgnc_symbol) %>% summarise_all(mean)
+
+#mouse_exp_mat <- data.frame(mouse_exp_mat)
+mouse_exp_mat$id <- index$ensembl_gene_id.y[match(mouse_exp_mat$hgnc_symbol, index$hgnc_symbol)]
+
 
 
 
@@ -48,17 +48,19 @@ mouse_exp_mat <- mouse_exp_mat[overlap_m$ensembl_gene_id, ]
 # design matrix
 human_meta <- data.frame(stage = factor(c(rep("arr", each = 8),
                                         rep("8C", each = 20))))
-row.names(human_meta) <- colnames(human_exp_mat)
+row.names(human_meta) <- colnames(human_exp_mat)[2:29]
 
 mouse_meta <- data.frame(stage = factor(c(rep("dia", each = 2),
                                         rep("E4.5", each = 3))))
-row.names(mouse_meta) <- colnames(mouse_exp_mat)
+row.names(mouse_meta) <- colnames(mouse_exp_mat)[2:6]
 
 
 # Create DESeq2Dataset object
-human_dds <- DESeqDataSetFromMatrix(countData = human_exp_mat, colData = human_meta, design = ~ stage)
+human_dat <- sapply(human_exp_mat[, 2:29], as.integer)
 
-mouse_dds <- DESeqDataSetFromMatrix(countData = mouse_exp_mat, colData = mouse_meta, design = ~ stage)
+human_dds <- DESeqDataSetFromMatrix(countData = human_exp_mat[, 2:29], colData = human_meta, design = ~ stage)
+
+mouse_dds <- DESeqDataSetFromMatrix(countData = mouse_exp_mat[, 2:6], colData = mouse_meta, design = ~ stage)
 
 
 # filter
