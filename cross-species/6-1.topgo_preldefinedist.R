@@ -29,6 +29,10 @@ mouse_res$id <- index$ensembl_gene_id.y[match(mouse_res$row, index$hgnc_symbol)]
 human_res <- human_res %>% na.omit()
 mouse_res <- mouse_res %>% na.omit() ## mouse data has NA
 
+# NA pval in mouse data, make them be in the same length
+human_res <- human_res %>% filter(row %in% mouse_res$row)
+
+
 ## gene lists
 # universe lists
 human_res$de <- ifelse(human_res$padj < 0.01, TRUE, FALSE)
@@ -94,6 +98,7 @@ for (p in go) {
 }
 
 save(human_GOdata, file = "human_GOdata.Rdata")
+save(human_allres, file = "human_GOallres.Rdata")
 
 write.table(human_allres[["BP"]], file = "human_predfres_bp.tsv", quote = F, sep = "\t")
 write.table(human_allres[["MF"]], file = "human_predfres_mf.tsv", quote = F, sep = "\t")
@@ -123,6 +128,7 @@ for (p in go) {
 }
 
 save(mouse_GOdata, file = "mouse_GOdata.Rdata")
+save(mouse_allres, file = "mouse_GOallres.Rdata")
 
 write.table(mouse_allres[["BP"]], file = "mouse_predfres_bp.tsv", quote = F, sep = "\t")
 write.table(mouse_allres[["MF"]], file = "mouse_predfres_mf.tsv", quote = F, sep = "\t")
