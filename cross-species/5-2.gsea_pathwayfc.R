@@ -36,9 +36,38 @@ system.time({
     fc <- human_res %>%
             filter(row %in% de_inpath) %>%
             select(log2FoldChange) %>% summarise_all(mean)
-    human_pathway_fc[i] <- fc
+    human_pathway_fc[i] <- fc %>% unlist()
     names(human_pathway_fc)[i] <- pathway
+
     }
 })
 
-tmp <- unlist(human_pathway_fc)
+write.table(human_pathway_fc, file = "human_pathway_fc.txt",
+            quote = F, sep = "\t", row.names = T, col.names = F)
+
+
+mouse_pathway_fc <- c()
+
+system.time({
+    
+    for (i in seq_len(nrow(m_fgseaResTidy))) {
+
+    pathway <- m_fgseaResTidy$pathway[i]
+
+    de_inpath <- m_fgseaResTidy$leadingEdge[[i]]
+
+    fc <- mouse_res %>%
+            filter(row %in% de_inpath) %>%
+            select(log2FoldChange) %>% summarise_all(mean)
+    mouse_pathway_fc[i] <- fc %>% unlist()
+    names(mouse_pathway_fc)[i] <- pathway
+
+    }
+})
+
+write.table(mouse_pathway_fc, file = "mouse_pathway_fc.txt",
+            quote = F, sep = "\t", row.names = T, col.names = F)
+
+
+
+

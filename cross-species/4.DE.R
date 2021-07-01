@@ -95,6 +95,6 @@ human_res <- results(DESeq(human_dds), contrast = c("stage", "arr", "8C"),
                     tidy = TRUE, independentFiltering = F)
 write.table(human_res, file = "human_deg.tsv", quote = F, sep = "\t")
 
-mouse_res <- results(DESeq(mouse_dds), contrast = c("stage", "E4.5", "dia"),
+mouse_res <- results(DESeq(mouse_dds), contrast = c("stage", "dia", "E4.5"),
                     tidy = TRUE, independentFiltering = F)
 write.table(mouse_res, file = "mouse_deg.tsv", quote = F, sep = "\t")
