@@ -1,5 +1,6 @@
 # 2D pathway dot plot
 # GSEA
+# pathway NES
 # -------------------
 
 rm(list = ls())
