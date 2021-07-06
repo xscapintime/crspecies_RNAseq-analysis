@@ -20,21 +20,22 @@ human_res <- human_res %>% filter(row %in% mouse_res$row)
 
 
 
-## GO BP
-genesets <- gmt_import("gmtdata/c5.go.bp.v7.4.symbols.gmt")
-
-
-## mitch
+### mitch
 x <- list("human" = human_res, "mouse" = mouse_res)
 
 y <- mitch_import(x, DEtype = "DESeq2", geneIDcol = "row")
+
+
+## GO BP
+genesets <- gmt_import("gmtdata/c5.go.bp.v7.4.symbols.gmt")
+
 
 res <- mitch_calc(y, genesets, priority = "significance", minsetsize = 10)
 mitch_bp <- res$enrichment_result
 
 write.table(mitch_bp, file = "mitch_res_bp.txt", quote = F, sep = "\t")
 
-mitch_plots(res, outfile = "mitch_charts.pdf")
+#mitch_plots(res, outfile = "mitch_charts.pdf")
 
 
 ## GO MF

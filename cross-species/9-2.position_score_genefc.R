@@ -224,4 +224,4 @@ system.time({
 })
 
 m_fgseaResTidy_gps <- cbind(m_fgseaResTidy, ps) %>% tibble()
-
+save(m_fgseaResTidy_gps, file = "m_fgseaResTidy_gps.Rdata")
