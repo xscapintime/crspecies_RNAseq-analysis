@@ -112,7 +112,7 @@ mouse_gsea <- cbind(m_fgseaResTidy, mouse_pathway_fc)
 ### --------------
 
 
-# rank
+# pathway rank
 human_gsea$rank <- rank(human_gsea$V2)
 mouse_gsea$rank <- rank(mouse_gsea$V2)
 
@@ -121,6 +121,18 @@ mouse_gsea$rank <- rank(mouse_gsea$V2)
 gsea <- list(human_gsea, mouse_gsea)
 names(gsea) <- c("human_gsea", "mouse_gsea")
 
+for (g in names(gsea)) {
 
-# save the GO res table with positionn score
+    tmp <- gsea[[g]]
+
+    for (j in 1:nrow(tmp)) {
+        R1 <- tmp$rank[j]
+        R2 <- mean(tmp$rank[-j])
+        tmp$ps[j] <- 2*(R1-R2)/nrow(tmp)
+
+        gsea[[g]]$ps <- tmp$ps
+    }
+}
+
+# save the GSEA res table with positionn score
 save(gsea, file = "gsea_fc_ps.Rdata")
