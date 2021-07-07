@@ -1,0 +1,48 @@
+# rank-MANOVA for each gene set
+# -----------------------------
+
+
+rm(list = ls())
+
+library(tidyverse)
+
+
+## gene ranks
+load("ranks.Rdata")
+
+
+## genes mapped to gene sets
+load("gene2sets_10cut.Rdata")
+
+
+## MANOVA Hotelling’s T2 test
+# make an empty data frame
+
+# number of all gene sets
+# set_len <- c()
+# for (set in names(map)) {
+#     set_len[set] <- length(map[[set]])
+# }
+# set_len <- sum(unlist(set_len))
+
+
+dat <- cbind(human_rank, mouse_rank) %>% data.frame
+
+pval_all <- c()
+
+system.time({
+
+    for (i in 1:length(map_fin)) {
+        dat$group <- map_fin[[i]] %>% factor()
+        # MANOVA
+        fit <- manova(cbind(human_rank, mouse_rank) ~ group, data = dat)
+        summ <- summary(fit, test = "Hotelling-Lawley")
+        pval  <- summ$stats[11]
+        pval_all[i] <- pval
+        }
+
+})
+
+names(pval_all) <- names(map_fin)
+
+save(pval_all, file = "manova_pval.Rdata")
