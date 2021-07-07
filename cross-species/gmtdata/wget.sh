@@ -1,6 +1,7 @@
 # all gene sets
 wget -c https://data.broadinstitute.org/gsea-msigdb/msigdb/release/7.4/msigdb.v7.4.symbols.gmt
 
+
 # GO BP by symbol
 wget -c http://data.broadinstitute.org/gsea-msigdb/msigdb/release/7.4/c5.go.bp.v7.4.symbols.gmt
 
@@ -9,3 +10,8 @@ wget -c https://data.broadinstitute.org/gsea-msigdb/msigdb/release/7.4/c5.go.mf.
 
 # GO CC by symbol
 wget -c https://data.broadinstitute.org/gsea-msigdb/msigdb/release/7.4/c5.go.cc.v7.4.symbols.gmt
+
+
+# KEGG
+wget -c https://data.broadinstitute.org/gsea-msigdb/msigdb/release/7.4/c2.cp.kegg.v7.4.symbols.gmt
+

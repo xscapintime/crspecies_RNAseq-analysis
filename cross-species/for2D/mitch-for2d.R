@@ -23,14 +23,14 @@ human_res <- human_res %>% filter(row %in% mouse_res$row)
 ### mitch
 x <- list("human" = human_res, "mouse" = mouse_res)
 
-y <- mitch_import(x, DEtype = "DESeq2", geneIDcol = "row")
+y <- mitch_import(x, DEtype = "DESeq2", geneIDcol = "row")  # actucally take 'stat' column of each input table
 
 
 ## GO BP
 genesets <- gmt_import("gmtdata/c5.go.bp.v7.4.symbols.gmt")
 
 
-res <- mitch_calc(y, genesets, priority = "significance", minsetsize = 10)
+res <- mitch_calc(y, genesets, priority = "significance", minsetsize = 10)  # rank from the midpoint of each input colunm
 mitch_bp <- res$enrichment_result
 
 write.table(mitch_bp, file = "mitch_res_bp.txt", quote = F, sep = "\t")
