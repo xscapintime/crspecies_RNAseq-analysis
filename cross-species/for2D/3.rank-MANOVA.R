@@ -46,3 +46,8 @@ system.time({
 names(pval_all) <- names(map_fin)
 
 save(pval_all, file = "manova_pval.Rdata")
+
+
+## ajust p-val
+bh_adjpval <- p.adjust(pval_all, method = "BH")
+save(bh_adjpval, file = "manova_bh_adjpval.Rdata")
