@@ -49,6 +49,6 @@ mouse_res %>% filter(row %in% duy_down) %>% dim
 
 # turn to gmt-like file
 diapuse_set <- list(diapuse_up$row, diapuse_down$row, duy_up, duy_down)
-names(diapuse_set) <- c("Diapause_up", "Diapuse_dn", "Diapause_up_Duy2021", "Diapause_dn_Duy2021")
+names(diapuse_set) <- c("Diapause_up", "Diapause_dn", "Diapause_up_Duy2021", "Diapause_dn_Duy2021")
 
 save(diapuse_set, file = "diapuse_set.Rdata")
