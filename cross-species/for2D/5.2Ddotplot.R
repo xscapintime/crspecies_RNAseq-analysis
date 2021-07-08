@@ -113,7 +113,7 @@ p <- ggplot(dat2, aes(x = mouse_ps, y = human_ps))
 p + geom_point(alpha = .6, aes(size = bh_adjpval, color = exp)) +
 
     scale_size(trans = "reverse") +
-    scale_color_manual(values = c("#4e9bda", "#ec4848")) +
+    scale_color_manual(values = c("#186eb4", "#ec4848")) +
 
     geom_text_repel(aes(label = row.names(dat2))) +
 
@@ -127,5 +127,5 @@ p + geom_point(alpha = .6, aes(size = bh_adjpval, color = exp)) +
     #             method = "spearman")
     #geom_smooth(method = "lm")
 
-ggsave(width = 7.6, height = 7.6, filename = "../figs/2d_diapause.pdf")
+ggsave(width = 7.6, height = 7.6, filename = "../figs/2d_diapause.png")
 
