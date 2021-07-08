@@ -54,9 +54,7 @@ dat <- data.frame(dat)
 
 
 
-
-
-
+### figure setting
 library(ggplot2)
 library(ggthemes)
 
