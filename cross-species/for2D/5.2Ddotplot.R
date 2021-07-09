@@ -91,11 +91,102 @@ p + geom_point(alpha = .6, aes(color = group, size = bh_adjpval,
     guides(color = F, shape = guide_legend(title = NULL),
             size = guide_legend(title = "q-value")) +
     scale_shape_discrete(breaks = c("GOBP", "GOMF", "GOCC", "KEGG", "Diapause")) +
-    stat_cor(data = dat %>% filter(bh_adjpval < 0.03) %>% select(human_ps, mouse_ps),
+    stat_cor(data = dat %>% filter(bh_adjpval < 0.02) %>% select(human_ps, mouse_ps),
                 method = "spearman")
     #geom_smooth(method = "lm")
 
-ggsave(width = 7.6, height = 7.6, filename = "../figs/2d_allpath.pdf")
+ggsave(width = 7.6, height = 7.6, filename = "../figs/2d_allpath.png")
+
+
+
+
+### Add text
+
+p <- ggplot(dat %>% filter(bh_adjpval < 0.02),
+            aes(x = mouse_ps, y = human_ps))
+p + geom_point(alpha = .6, aes(color = group, size = bh_adjpval,
+                shape = cat)) + #shape = sig
+
+    scale_size(trans = "reverse") +
+    scale_color_manual(values = c("#D43F3A", "#5CB85C", "#7C878E")) +
+
+    geom_text_repel(data = dat %>%
+                filter(abs(dat$mouse_ps * dat$human_ps) > 0.125 & group == "corr"),
+                mapping = aes(label = dat %>%
+                                filter(abs(dat$mouse_ps * dat$human_ps) > 0.125 & group == "corr") %>%
+                                row.names), size = 2.5, segment.size = 0.2, segment.color = "#DCDCDC") +
+
+    labs(x = "Diapause / E4.5", y = "Arrested / 8C") +
+    xlim(-1, 1) + ylim(-1, 1) +
+    geom_vline(xintercept = 0, linetype = "dashed", size = 0.6) +
+    geom_hline(yintercept = 0, linetype = "dashed", size = 0.6) +
+    guides(color = F, shape = guide_legend(title = NULL),
+            size = guide_legend(title = "q-value")) +
+    scale_shape_discrete(breaks = c("GOBP", "GOMF", "GOCC", "KEGG", "Diapause")) +
+    stat_cor(data = dat %>% filter(bh_adjpval < 0.02) %>% select(human_ps, mouse_ps),
+                method = "spearman")
+    #geom_smooth(method = "lm")
+
+ggsave(width = 7.6, height = 7.6, filename = "../figs/2d_allpath_corr.png")
+
+
+
+p <- ggplot(dat %>% filter(bh_adjpval < 0.02),
+            aes(x = mouse_ps, y = human_ps))
+p + geom_point(alpha = .6, aes(color = group, size = bh_adjpval,
+                shape = cat)) + #shape = sig
+
+    scale_size(trans = "reverse") +
+    scale_color_manual(values = c("#D43F3A", "#5CB85C", "#7C878E")) +
+
+    geom_text_repel(data = dat %>%
+                filter(abs(dat$mouse_ps * dat$human_ps) > 0.125 & group == "anti"),
+                mapping = aes(label = dat %>%
+                                filter(abs(dat$mouse_ps * dat$human_ps) > 0.125 & group == "anti") %>%
+                                row.names), size = 2.5, segment.size = 0.4, segment.color = "#DCDCDC") +
+
+    labs(x = "Diapause / E4.5", y = "Arrested / 8C") +
+    xlim(-1, 1) + ylim(-1, 1) +
+    geom_vline(xintercept = 0, linetype = "dashed", size = 0.6) +
+    geom_hline(yintercept = 0, linetype = "dashed", size = 0.6) +
+    guides(color = F, shape = guide_legend(title = NULL),
+            size = guide_legend(title = "q-value")) +
+    scale_shape_discrete(breaks = c("GOBP", "GOMF", "GOCC", "KEGG", "Diapause")) +
+    stat_cor(data = dat %>% filter(bh_adjpval < 0.02) %>% select(human_ps, mouse_ps),
+                method = "spearman")
+    #geom_smooth(method = "lm")
+
+ggsave(width = 7.6, height = 7.6, filename = "../figs/2d_allpath_anti.pdf")
+
+
+
+
+p <- ggplot(dat %>% filter(bh_adjpval < 0.02),
+            aes(x = mouse_ps, y = human_ps))
+p + geom_point(alpha = .6, aes(color = group, size = bh_adjpval,
+                shape = cat)) + #shape = sig
+
+    scale_size(trans = "reverse") +
+    scale_color_manual(values = c("#D43F3A", "#5CB85C", "#7C878E")) +
+
+    geom_text_repel(data = dat %>%
+                filter(abs(dat$mouse_ps * dat$human_ps) > 0.18),
+                mapping = aes(label = dat %>%
+                                filter(abs(dat$mouse_ps * dat$human_ps) > 0.18) %>%
+                                row.names), size = 2.5, segment.size = 0.5, segment.color = "#DCDCDC") +
+
+    labs(x = "Diapause / E4.5", y = "Arrested / 8C") +
+    xlim(-1, 1) + ylim(-1, 1) +
+    geom_vline(xintercept = 0, linetype = "dashed", size = 0.6) +
+    geom_hline(yintercept = 0, linetype = "dashed", size = 0.6) +
+    guides(color = F, shape = guide_legend(title = NULL),
+            size = guide_legend(title = "q-value")) +
+    scale_shape_discrete(breaks = c("GOBP", "GOMF", "GOCC", "KEGG", "Diapause")) +
+    stat_cor(data = dat %>% filter(bh_adjpval < 0.02) %>% select(human_ps, mouse_ps),
+                method = "spearman")
+    #geom_smooth(method = "lm")
+
+ggsave(width = 7.6, height = 7.6, filename = "../figs/2d_allpath_seltext.pdf")
 
 
 
