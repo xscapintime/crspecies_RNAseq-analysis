@@ -59,8 +59,8 @@ dat <- inner_join(dat_h, dat_m, by = "pathway")
 
 
 ## clean up
-dat <- dat %>% filter(size.x < 10) %>%
-                filter(padj.x <= 0.1 | padj.y <= 0.1)
+dat <- dat %>% filter(size.x > 10) #%>%
+                #filter(padj.x < 0.01 & padj.y < 0.01)
 
 
 
@@ -74,13 +74,13 @@ dat <- dat %>% filter(size.x < 10) %>%
 
 # only fc
 dat$group <- ifelse(dat$pathfc.x * dat$pathfc.y > 0,
-                    ifelse(abs(dat$pathfc.x) >= 1 & abs(dat$pathfc.y) >= 1, "corr", "other"),
-                    ifelse(abs(dat$pathfc.x) >= 1 & abs(dat$pathfc.y) >= 1, "anti", "other"))
+                    ifelse(abs(dat$pathfc.x) >= 2 & abs(dat$pathfc.y) >= 2, "corr", "other"),
+                    ifelse(abs(dat$pathfc.x) >= 2 & abs(dat$pathfc.y) >= 2, "anti", "other"))
 
 
-dat$sig <- ifelse(dat$padj.x <= 0.05 & dat$padj.y <= 0.05, "bothsig",
-                    ifelse(dat$padj.x <= 0.05, "hsig",
-                            ifelse(dat$padj.y <= 0.05, "msig", "no")))
+dat$sig <- ifelse(dat$padj.x < 0.01 & dat$padj.y < 0.01, "bothsig",
+                    ifelse(dat$padj.x < 0.01, "hsig",
+                            ifelse(dat$padj.y < 0.01, "msig", "no")))
 
 
 # dotplot
@@ -91,7 +91,7 @@ theme_set(
 
 p <- ggplot(dat, #%>% filter(padj.x <= 0.05 | padj.y <= 0.05),
             aes(x = pathfc.x, y = pathfc.y))
-p + geom_point(alpha = .6, aes(color = group, shape = sig)) +
+p + geom_point(alpha = .6, size = 1, aes(color = group, shape = sig)) +
                                 #size = dat$size.x/dat$size.y)) + # size are the same
 
     scale_color_manual(values = c("#D43F3A", "#5CB85C", "#7C878E")) +
