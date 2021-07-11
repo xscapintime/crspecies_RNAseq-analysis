@@ -39,6 +39,7 @@ theme_set(
     theme(legend.position = "right"))
 
 
+#png("figs/2dgobp_pathfcps.png", res = 300)
 p <- ggplot(dat, #%>% filter(padj.x <= 0.05 | padj.y <= 0.05),
             aes(x = ps.x, y = ps.y))
 p + geom_point(alpha = .6, size = 1, aes(color = group, shape = sig)) +
@@ -54,4 +55,6 @@ p + geom_point(alpha = .6, size = 1, aes(color = group, shape = sig)) +
     labs(title = "2D GOBP pathways",
           x = "Arrested / 8C pathway FC", y = "Diapause / E4.5 pathway FC")
 
-ggsave(width = 7.6, height = 7.6, filename = "figs/2dgobp_pathfcps.png")
+ggsave(width = 7.6, height = 7.6, filename = "figs/2dgobp_pathfcps.pdf")
+
+#dev.off()

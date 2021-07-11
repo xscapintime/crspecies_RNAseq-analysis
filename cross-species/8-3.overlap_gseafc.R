@@ -104,5 +104,5 @@ p + geom_point(alpha = .6, size = 1, aes(color = group, shape = sig)) +
     labs(title = "2D GSEA pathways",
           x = "Arrested / 8C log2FC", y = "Diapause / E4.5 log2FC")
 
-ggsave(width = 7.6, height = 7.6, filename = "figs/2dgsea_pathfcsub.png")
+ggsave(width = 7.6, height = 7.6, filename = "figs/2dgsea_pathfcsub.pdf")
 

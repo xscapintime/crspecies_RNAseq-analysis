@@ -54,4 +54,4 @@ p + geom_point(alpha = .6, size = 1, aes(color = group, shape = sig)) +
     labs(title = "2D GOBP pathways",
           x = "Arrested / 8C gene FC", y = "Diapause / E4.5 gene FC")
 
-ggsave(width = 7.6, height = 7.6, filename = "figs/2dgobp_genefcps.png")
+ggsave(width = 7.6, height = 7.6, filename = "figs/2dgobp_genefcps.pdf")
