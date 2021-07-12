@@ -62,9 +62,15 @@ for (i in 1:length(diaidx)) {
 
 for (i in 1:length(plotdat)) {
 
-    p <- ggplot(plotdat[[i]], aes(x = mouse_fc, y = human_fc))
-    p + geom_point(alpha = .6, aes(color = inpath)) +
-        scale_color_manual(values = c("#7C878E", "#EFC000FF")) +
+    p <- ggplot()
+    p + geom_point(data = plotdat[[i]] %>% filter(inpath == 0),
+                    color = "#aab0b4", alpha = .6,
+                    aes(x = mouse_fc, y = human_fc)) +
+        geom_point(data = plotdat[[i]] %>% filter(inpath == 1),
+                    color = "#EFC000FF", alpha = .6,
+                    aes(x = mouse_fc, y = human_fc)) +
+
+        #scale_color_manual(values = c("#7C878E", "#EFC000FF")) +
 
         geom_vline(xintercept = 0, linetype = "dashed", size = 0.6) +
         geom_hline(yintercept = 0, linetype = "dashed", size = 0.6) +

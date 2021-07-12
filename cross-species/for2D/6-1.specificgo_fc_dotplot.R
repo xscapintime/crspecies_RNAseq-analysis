@@ -57,8 +57,9 @@ dat <- data.frame(dat)
 ### figure setting
 library(ggplot2)
 library(ggthemes)
+library(plyr)
 
-theme_set(theme_few() + theme(legend.position = "none"))
+theme_set(theme_few() + theme(legend.position = "right"))
 
 
 ####################################################
@@ -77,9 +78,15 @@ for (i in 1:length(dnidx)) {
 
 for (i in 1:length(plotdat)) {
 
-    p <- ggplot(plotdat[[i]], aes(x = mouse_fc, y = human_fc))
-    p + geom_point(alpha = .6, aes(color = inpath)) +
-        scale_color_manual(values = c("#7C878E", "#186eb4")) +
+    p <- ggplot()
+    p + geom_point(data = plotdat[[i]] %>% filter(inpath == 0),
+                    color = "#aab0b4", alpha = .6,
+                    aes(x = mouse_fc, y = human_fc)) +
+        geom_point(data = plotdat[[i]] %>% filter(inpath == 1),
+                    color = "#186eb4", alpha = .6,
+                    aes(x = mouse_fc, y = human_fc)) +
+
+        #scale_color_manual(values = c("#aab0b4", "#186eb4")) +
 
         geom_vline(xintercept = 0, linetype = "dashed", size = 0.6) +
         geom_hline(yintercept = 0, linetype = "dashed", size = 0.6) +
@@ -112,9 +119,15 @@ for (i in 1:length(upidx)) {
 
 for (i in 1:length(plotdat)) {
 
-    p <- ggplot(plotdat[[i]], aes(x = mouse_fc, y = human_fc))
-    p + geom_point(alpha = .6, aes(color = inpath)) +
-        scale_color_manual(values = c("#7C878E", "#ec4848")) +
+    p <- ggplot()
+    p + geom_point(data = plotdat[[i]] %>% filter(inpath == 0),
+                    color = "#aab0b4", alpha = .6,
+                    aes(x = mouse_fc, y = human_fc)) +
+        geom_point(data = plotdat[[i]] %>% filter(inpath == 1),
+                    color = "#c72a2a", alpha = .6,
+                    aes(x = mouse_fc, y = human_fc)) +
+
+        #scale_color_manual(values = c("#7C878E", "#ec4848")) +
 
         geom_vline(xintercept = 0, linetype = "dashed", size = 0.6) +
         geom_hline(yintercept = 0, linetype = "dashed", size = 0.6) +
