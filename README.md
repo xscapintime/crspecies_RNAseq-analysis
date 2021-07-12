@@ -1,6 +1,6 @@
 # Cross-species RNA-Seq analysis
 
-Human and mouse RNA-Seq/scRNA-Seq downstream comparison, considering baseline expresison level~~? or homology strucutre?~~
+Human and mouse RNA-Seq/scRNA-Seq downstream comparison, considering baseline expresison level? ~~or homology strucutre?~~
 
 Eventually will come to 2D pathway enrichment analysis described in [Cox and Mann, 2012](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3489530/).
 
