@@ -91,4 +91,4 @@ Eventually will come to 2D pathway enrichment analysis described in [Cox and Man
 - mitch_*.R
   - Use Bioconductor package [`mitch`](https://doi.org/10.1186/s12864-020-06856-9) to do 2D annotation.
   - By default, it takes `stat` column form `DESeq2` result, and rank genes from the midpoint.
-  - When adopted with log2FC, the results are exactly the same, except `mitch` is wat much faster than the manual appraoch.
+  - When adopted with log2FC, the results are exactly the same, except `mitch` is way much faster than the manual appraoch.
