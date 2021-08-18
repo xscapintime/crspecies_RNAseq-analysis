@@ -21,20 +21,30 @@ res <- CytoTRACE(expr)
 save(res, file = "cytotrace_res.Rdata")
 
 #########======================#####################
-load("../all/cytotrace_res.Rdata")
+load("cytotrace_res.Rdata")
 
 ## plot res
 # group the phenotypes
-# for E3.xx.xxxx
-phe <- unlist(lapply(X = colnames(expr), FUN = function(x) {return(strsplit(x, split = ".", fixed = T)[[1]][1])}))
-# for "Hs_ss_arrested_8C_rp10"
-phe[grep("arrested", phe)] <- unlist(lapply(X = phe[grep("arrested", phe)], FUN = function(x) {
-    return(strsplit(x, split = "_rp", fixed = F)[[1]][1])}))
-# for "Zygote_E1_C1"
-phe <- sub("_E[0-9]_C[0-9]*|_E[0-9]_C[0-9]*_\\w*", "", phe)
 
-names(phe) <-  colnames(expr)
+phe <- colnames(expr)
+phe[grep("Type", phe)] <- unlist(lapply(X = phe[grep("Type", phe)], FUN = function(x) {
+    return(strsplit(x, split = "_Type_", fixed = F)[[1]][2])}))
+
+#phe <- colnames(expr)[grep("Arrested", colnames(expr), invert = T)]
+
+phe <- ifelse(grepl("_", phe) == TRUE,
+            unlist(lapply(X = phe, FUN = function(x) {return(strsplit(x, split = "_", fixed = T)[[1]][1])})),
+            phe)
+
+phe[grep("Arrested", colnames(expr))] <- paste0("Arrested_Type_", phe[grep("Arrested", colnames(expr))])
+phe[grep("Late", phe)] <- paste0(phe[grep("Late", phe)], "_blastocyst")
+
+# 2C, 4C, 8C
+phe <- sub("X", "", phe)
+
+names(phe) <- colnames(expr)
 plotCytoTRACE(res, phenotype = phe)
+
 
 ## plot gene
 plotCytoGenes(res, numOfGenes = 20)
