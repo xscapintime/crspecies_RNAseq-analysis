@@ -63,6 +63,11 @@ human_normalized_counts_t3 <- counts(human_dds_t3, normalized = TRUE)
 mouse_dds <- estimateSizeFactors(mouse_dds)
 mouse_normalized_counts <- counts(mouse_dds, normalized = TRUE)
 
+# save normed count table
+write.table(human_normalized_counts_t2, file = "human_normed_count_t2.tsv", quote = F, sep = "\t")
+write.table(human_normalized_counts_t3, file = "human_normed_count_t3.tsv", quote = F, sep = "\t")
+
+write.table(mouse_normalized_counts, file = "mouse_normed_count.tsv", quote = F, sep = "\t")
 
 
 # maximum sample-group-averaged expression level ####

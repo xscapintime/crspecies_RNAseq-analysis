@@ -38,6 +38,8 @@ dat$sig <- ifelse(dat$bh_adjpval < 0.05, "sig", "no")
 dat$cat <- unlist(lapply(X = row.names(dat), FUN = function(x) {
                 return(strsplit(x, split = "_")[[1]][1])}))
 
+write.table(dat, file = "manova-position.txt", quote = F, sep = "\t")
+
 
 # correlation test
 sigs <- dat %>% filter(bh_adjpval < 0.03) %>% select(human_ps, mouse_ps)
