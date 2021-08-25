@@ -8,12 +8,12 @@ library(tidyverse)
 #help(package = "CytoTRACE")
 
 ## arrested cells only
-expr <- read.table("data/norm_input-withresveratrol.tsv/norm_input.tsv", sep = "\t", row.names = 1, header = T)
+expr <- read.table("../data/norm_input-withresveratrol.tsv/norm_input.tsv", sep = "\t", row.names = 1, header = T)
 genes <- row.names(expr)
 stages <- colnames(expr)
 
 expr <- as.data.frame(lapply(expr, as.numeric))
-colnames(expr) <- stages
+colnames(expr) <- sub("X", "", stages)
 rownames(expr) <- genes
 
 ## cytotrace
@@ -23,9 +23,32 @@ save(res, file = "cytotrace_res.Rdata")
 #########======================#####################
 load("cytotrace_res.Rdata")
 
-## plot res
-# group the phenotypes
+## meta data for group
+meta <- read.csv("../data/norm_input-withresveratrol.tsv/sample_metadata.tsv", header = T, sep = "\t")
 
+# check names
+setdiff(meta$original_name, colnames(res$exprMatrix))
+idx <- match(meta$original_name, colnames(res$exprMatrix))
+
+phe <- meta$phenotype
+names(phe) <- colnames(res$exprMatrix)[idx]
+
+phe <- sub("\\(Untreated\\) ", "", phe)
+
+
+## plot res
+## cytotrace plot
+plotCytoTRACE(res, phenotype = phe)
+
+
+## plot gene
+plotCytoGenes(res, numOfGenes = 20)
+
+
+# group the phenotypes
+# string stuff
+# useless when got the meta table
+# -----------------------
 phe <- colnames(expr)
 
 # 1) for E3, E4, E5, E6, E7, split by '.'
@@ -72,11 +95,6 @@ phe[grep("X", phe)] <- sub("X", "", unlist(lapply(X = phe[grep("X", phe)], FUN =
 names(phe) <- colnames(expr)
 
 
-## cytotrace plot
-plotCytoTRACE(res, phenotype = phe)
 
-
-## plot gene
-plotCytoGenes(res, numOfGenes = 20)
 
 #test <- CytoTRACE(marrow_10x_expr)
