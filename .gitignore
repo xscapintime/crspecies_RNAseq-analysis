@@ -7,6 +7,8 @@
 *.Rdata
 *.gmt
 *.png
+*.html
+*.xml
 
 *.fa
 *.fasta
