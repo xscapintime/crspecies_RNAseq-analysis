@@ -35,52 +35,49 @@ human_dn_t2 <- human_res_t2 %>% filter(log2FoldChange < -2 & padj < 0.05) %>% dp
 # dn_t2 <- read.table("../compr-expr/common_dn_deg_t2.tsv")
 
 
-## ID convert
-library(AnnotationDbi)
-library(org.Hs.eg.db)
+## match transcripts with gene symbols
 
-up_t2_ez <- AnnotationDbi::select(src, keys = human_up_t2$row, columns = "entrez", keytype = "symbol") %>% distinct()
-dn_t2_ez <- AnnotationDbi::select(TxDb.Hsapiens.UCSC.hg38.knownGene, keys = human_dn_t2$row, columns = "TXNAME", keytype = "TXNAME")
-
-
-library(biomaRt)
-human <- useEnsembl(biomart = "genes", dataset = "hsapiens_gene_ensembl")
-human_go_id <- getBM(attributes = c("hgnc_symbol", "entrezgene_id"),
-                        filters = "hgnc_symbol",
-                        values = human_up_t2$row, mart = human)
-
-
-
-## get promoter
-all_trs <- transcriptsBy(TxDb.Hsapiens.UCSC.hg38.knownGene, by = "gene")#[up_t2_ez$entrez]
-
-up_prom <- getPromoterSeq(up_trs, Hsapiens, upstream = 1000, downstream = 0)
-names(up_prom) <- up_t2_ez$SYMBOL
-
-dn_trs <- transcriptsBy(TxDb.Hsapiens.UCSC.hg38.knownGene, by = "gene")[dn_t2_ez$ENTREZID]
-dn_prom <- getPromoterSeq(dn_trs, Hsapiens, upstream = 1000, downstream = 0)
-names(dn_prom) <- dn_t2_ez$SYMBOL
-
-
-
-
-
-up_trs <- GRangesList()
-for(i in 1:nrow(human_up_t2)) { 
-    up_trs[[i]] <- transcripts(src, filter = SymbolFilter(human_dn_t2$row[i]))
-    up_trs[[i]] <- up_trs[[i]][!seqnames(up_trs[[i]]) %>% stringr::str_detect("_")]
-}
-names(up_trs) <- up_t2_ez$symbol
+system.time({
+    up_trs <- GRangesList()
+    for(i in 1:nrow(human_up_t2)) {
+        up_trs[[i]] <- transcripts(src, filter = SymbolFilter(human_up_t2$row[i]))
+        up_trs[[i]] <- up_trs[[i]][!seqnames(up_trs[[i]]) %>% stringr::str_detect("_")]
+    }
+})
+names(up_trs) <- human_up_t2$row
 
 up_prom <- getPromoterSeq(up_trs, Hsapiens, upstream = 1000)
 
 
+system.time({
+    dn_trs <- GRangesList()
+    for(i in 1:nrow(human_dn_t2)) {
+        dn_trs[[i]] <- transcripts(src, filter = SymbolFilter(human_dn_t2$row[i]))
+        dn_trs[[i]] <- dn_trs[[i]][!seqnames(dn_trs[[i]]) %>% stringr::str_detect("_")]
+    }
+})
+names(dn_trs) <- human_dn_t2$row
+
+dn_prom <- getPromoterSeq(dn_trs, Hsapiens, upstream = 1000)
+
 
 ## export promoter fasta
 for (i in names(up_prom)) {
-    writeXStringSet(up_prom[[i]], filepath = paste0("upstream_seq/common_up/", i, "_prom_1k.fasta"), format = "fasta")
+    #writeXStringSet(up_prom[[i]], filepath = paste0("upstream_seq/common_up/", i, "_prom_1k.fasta"), format = "fasta")
+    writeXStringSet(up_prom[[i]], filepath = paste0("upstream_seq/arr_up/", i, "_prom_1k.fasta"), format = "fasta")
 }
 
 for (i in names(dn_prom)) {
-    writeXStringSet(dn_prom[[i]], filepath = paste0("upstream_seq/common_dn/", i, "_prom_1k.fasta"), format = "fasta")
+    #writeXStringSet(dn_prom[[i]], filepath = paste0("upstream_seq/common_dn/", i, "_prom_1k.fasta"), format = "fasta")
+    writeXStringSet(dn_prom[[i]], filepath = paste0("upstream_seq/arr_dn/", i, "_prom_1k.fasta"), format = "fasta")
 }
+
+
+
+tmp <- GRangesList()
+    for(i in 1:nrow(human_dn_t2)) {
+        dn_trs[[i]] <- transcripts(src, filter = SymbolFilter(human_dn_t2$row[i]))
+        #dn_trs[[i]] <- dn_trs[[i]][!seqnames(dn_trs[[i]]) %>% stringr::str_detect("_")]
+    }
+
+
