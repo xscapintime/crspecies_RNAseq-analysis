@@ -81,7 +81,7 @@ dn_prom <- split(dn_prom, dn_prom$symbol)
 dn_prom_seq <- getSeq(Hsapiens, dn_prom)
 
 
-## export
+## export to fasta
 # 624 out of 627
 for (i in names(up_prom_seq)) {
     #writeXStringSet(up_prom[[i]], filepath = paste0("upstream_seq/common_up/", i, "_prom_1k.fasta"), format = "fasta")
@@ -93,3 +93,8 @@ for (i in names(dn_prom_seq)) {
     #writeXStringSet(dn_prom[[i]], filepath = paste0("upstream_seq/common_dn/", i, "_prom_1k.fasta"), format = "fasta")
     writeXStringSet(dn_prom_seq[[i]], filepath = paste0("upstream_seq/arr_dn.v2/", i, "_prom_1k.fasta"), format = "fasta")
 }
+
+
+## export to bed
+rtracklayer::export.bed(unlist(up_prom), "upstream_bed/up_1k_all.bed")
+rtracklayer::export.bed(unlist(dn_prom), "upstream_bed/dn_1k_all.bed")

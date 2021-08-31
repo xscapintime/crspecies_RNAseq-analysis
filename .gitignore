@@ -12,6 +12,7 @@
 
 *.fa
 *.fasta
+*.bed
 
 doc/
 */data/
