@@ -10,14 +10,14 @@ library(tidyverse)
 cyt <- read.table("CytoTRACE_plot_table.txt", header = T, row.names = 1, sep = "\t")
 
 ## subset
-sub <- cyt %>% filter(!Phenotype %in% c("E4", "E5", "E6","E7", "Blastocyst", "Late blastocyst"))
+sub <- cyt %>% filter(!Phenotype %in% c("E5", "E6","E7", "Blastocyst", "Late blastocyst"))
 sub$Phenotype <- factor(sub$Phenotype, levels = c("Oocyte", "Zygote", "2C", "Arrested Type I", "4C",
-                        "Arrested Type II", "8C", "E3", "Arrested Type III", "Morula"))
+                        "Arrested Type II", "8C", "E3", "Arrested Type III", "Morula", "E4"))
 
 
 ## draw boxplot
 library(ggplot2)
-library(hrbrthemes)
+#library(hrbrthemes)
 
 
 cols <- c("#9E0142", "#C2294A", "#DF4D4B", "#F46D43", "#FA9856", "#FDBE6E", "#FEE08B", "#FEDA2E",
@@ -36,11 +36,11 @@ p <- ggplot(sub, aes(x = Phenotype, y = CytoTRACE, color = Phenotype, fill = Phe
 p +  geom_boxplot(alpha = 0.4) +
     geom_jitter(size = 0.3, width = 0.25) +
     ylab("Predicted ordering by CytoTRACE") + xlab("") +
-    scale_color_manual(values = adjustcolor(cols, alpha.f = 0.25)[1:10], aesthetics = "fill") +
-    scale_color_manual(values = cols[1:10], aesthetics = "color") +
+    scale_color_manual(values = adjustcolor(cols, alpha.f = 0.25)[1:11], aesthetics = "fill") +
+    scale_color_manual(values = cols[1:11], aesthetics = "color") +
     theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))
 
-ggsave(width = 7, height = 6, filename = "cytotrace_boxplot_nores_part.pdf")
+ggsave(width = 6.7, height = 7, filename = "cytotrace_boxplot_nores_part.pdf")
 
 
 
