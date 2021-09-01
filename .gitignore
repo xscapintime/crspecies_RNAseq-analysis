@@ -4,15 +4,19 @@
 *.txt
 *.zip
 *.docx
+*.xlsx
 *.Rdata
 *.gmt
 *.png
 *.html
 *.xml
+*.svg
 
 *.fa
 *.fasta
 *.bed
+
+*.motif*
 
 doc/
 */data/
