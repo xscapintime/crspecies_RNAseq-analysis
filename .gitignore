@@ -17,6 +17,8 @@
 *.bed
 
 *.motif*
+*.pcm
+*.meme
 
 doc/
 */data/
