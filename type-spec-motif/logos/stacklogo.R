@@ -1,5 +1,5 @@
 # plot motif logos
-# common ones
+# common ones | homer & meme
 # ------------------
 
 library(motifStack)

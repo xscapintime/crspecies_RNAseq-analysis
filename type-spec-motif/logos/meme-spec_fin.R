@@ -1,4 +1,5 @@
 # remove pariwise overlap motif
+# for meme results
 # --------------------------------
 
 rm(list = ls())
@@ -37,3 +38,7 @@ names(allspec) <- c("typeI_up", "typeII_up", "typeIII_up", "typeI_dn", "typeII_d
 for (i in 1:length(allspec)) {
     write.table(allspec[[i]], file = paste0("meme-", names(allspec[i]),"_fin.txt"), quote = F, row.names = F, col.names = F, sep = "\t")
 }
+
+
+### pairwise-overlapped motifs
+## type I vs II

@@ -1,5 +1,5 @@
 # plot motif logos
-# specific ones
+# all type-specific ones
 # ------------------
 
 library(motifStack)
@@ -196,3 +196,87 @@ while (!is.null(dev.list()))  dev.off()
 ###########################################
 ###============== typeIII ==============###
 ###########################################
+## up
+pcmfiles <- list.files("pwm/typeIII/up", pattern = "*.pcm")
+# pfmfiles <- list.files("pwm/typeIII/up", pattern = "*.pfm")
+# memefiles <- list.files("pwm/typeIII/up", pattern = "*.meme")
+
+# read
+# hoco
+pcms <- lapply(pcmfiles, function(file) { t(read.table(paste0("pwm/typeIII/up/", file), comment.char = ">"))})
+names(pcms) <- unlist(lapply(X = pcmfiles, FUN = function(x) {return(strsplit(x, split = ".pcm")[[1]][1])}))
+
+# jaspar pfm looks like pcm...
+# pfms <- lapply(pfmfiles, function(file) { read.table(paste0("pwm/typeIII/up/", file), comment.char = ">")})
+# names(pfms) <- unlist(lapply(X = pfmfiles, FUN = function(x) {return(strsplit(x, split = ".pfm")[[1]][1])}))
+
+# from jolma2013
+# memes <- lapply(memefiles, function(file) { t(read.table(paste0("pwm/typeIII/up/", file), skip = 3, check.names = FALSE))})
+# names(memes) <- unlist(lapply(X = memefiles, FUN = function(x) {return(strsplit(x, split = ".meme")[[1]][1])}))
+
+
+# convert pcm to pfm
+hocopfms <- lapply(pcms, pcm2pfm)
+# jsppfms <- lapply(pfms, pcm2pfm)
+
+
+# plot
+motif_all <- c(hocopfms)
+
+pfmlist <- list()
+for (i in 1:length(motif_all)) {
+    row.names(motif_all[[i]]) <- c("A","C","G","T")
+    pfmlist[i] <- new("pfm", mat = as.matrix(motif_all[[i]]), name = names(motif_all[i]))
+}
+names(pfmlist) <- names(motif_all)
+
+#pdf("typeIII_up_stack_full.pdf", width = 8, height = 28)
+pdf("typeIII_up_full.pdf", width = 8, height = 4) # there's only one
+# motifStack(pfmlist, layout = "stack", ncex = 0.8, font = "Arial", reorder = T)
+plot(pfmlist[["ZSC22_HUMAN.H11MO.0.C"]], font = "Arial")
+while (!is.null(dev.list()))  dev.off()
+
+
+
+## dn
+# pcmfiles <- list.files("pwm/typeIII/dn", pattern = "*.pcm")
+pfmfiles <- list.files("pwm/typeIII/dn", pattern = "*.pfm")
+# memefiles <- list.files("pwm/typeIII/dn", pattern = "*.meme")
+
+# read
+# hoco
+# pcms <- lapply(pcmfiles, function(file) { t(read.table(paste0("pwm/typeIII/dn/", file), comment.char = ">"))})
+# names(pcms) <- unlist(lapply(X = pcmfiles, FUN = function(x) {return(strsplit(x, split = ".pcm")[[1]][1])}))
+
+# jaspar pfm looks like pcm...
+pfms <- lapply(pfmfiles, function(file) { read.table(paste0("pwm/typeIII/dn/", file), comment.char = ">")})
+names(pfms) <- unlist(lapply(X = pfmfiles, FUN = function(x) {return(strsplit(x, split = ".pfm")[[1]][1])}))
+
+# from jolma2013
+# memes <- lapply(memefiles, function(file) { t(read.table(paste0("pwm/typeIII/dn/", file), skip = 3, check.names = FALSE))})
+# names(memes) <- unlist(lapply(X = memefiles, FUN = function(x) {return(strsplit(x, split = ".meme")[[1]][1])}))
+
+
+# convert pcm to pfm
+# hocopfms <- lapply(pcms, pcm2pfm)
+jsppfms <- lapply(pfms, pcm2pfm)
+
+
+# plot
+motif_all <- c(jsppfms)
+
+pfmlist <- list()
+for (i in 1:length(motif_all)) {
+    row.names(motif_all[[i]]) <- c("A","C","G","T")
+    pfmlist[i] <- new("pfm", mat = as.matrix(motif_all[[i]]), name = names(motif_all[i]))
+}
+names(pfmlist) <- names(motif_all)
+
+# png("test.png")
+pdf("typeIII_dn_stack_full.pdf", width = 8, height = 6)
+# pdf("test.pdf")
+# pdf("typeIII_dn_tree_full.pdf", width = 10, height = 8)
+plotMotifLogoStack(pfmlist, font = "Arial", ncex = 0.8) # font arg of motifStack always down
+
+while (!is.null(dev.list()))  dev.off()
+
