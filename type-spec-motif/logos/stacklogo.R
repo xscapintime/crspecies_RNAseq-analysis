@@ -1,4 +1,5 @@
 # plot motif logos
+# common ones
 # ------------------
 
 library(motifStack)
@@ -38,9 +39,10 @@ for (i in 1:length(motif_all)) {
     pfmlist[i] <- new("pfm", mat = as.matrix(motif_all[[i]]), name = names(motif_all[i]))
 }
 
-pdf("dn_stack.pdf") #, width = 720, height = 1500
+pdf("dn_stack.pdf", width = 8, height = 10)
+#par(mar = c(4.1, 4.1, 2.1, 4.1))
 motifStack(pfmlist, layout = "stack", ncex = 0.8, font = "Arial")
-dev.off()
+while (!is.null(dev.list()))  dev.off()
 
 
 
@@ -74,7 +76,7 @@ for (i in 1:length(motif_all)) {
     pfmlist[i] <- new("pfm", mat = as.matrix(motif_all[[i]]), name = names(motif_all[i]))
 }
 
-png("t2up_stack.png", width = 500, height = 800, units = "in", res = 300)
+pdf("up_stack.pdf", width = 8, height = 10)
 #par(mar= c(4, 4, 2, 1))
-motifStack(pfmlist, layout = "stack", font = "Arial", ncex = 1)
+motifStack(pfmlist, layout = "stack", font = "Arial", ncex = 0.8)
 dev.off()

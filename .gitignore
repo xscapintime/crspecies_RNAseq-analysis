@@ -18,6 +18,7 @@
 
 *.motif*
 *.pcm
+*.pfm
 *.meme
 
 doc/
