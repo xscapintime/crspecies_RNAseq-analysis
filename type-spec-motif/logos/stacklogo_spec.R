@@ -236,8 +236,6 @@ pdf("typeIII_up_full.pdf", width = 8, height = 4) # there's only one
 plot(pfmlist[["ZSC22_HUMAN.H11MO.0.C"]], font = "Arial")
 while (!is.null(dev.list()))  dev.off()
 
-
-
 ## dn
 # pcmfiles <- list.files("pwm/typeIII/dn", pattern = "*.pcm")
 pfmfiles <- list.files("pwm/typeIII/dn", pattern = "*.pfm")

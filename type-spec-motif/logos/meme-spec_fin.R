@@ -17,7 +17,7 @@ typeII_dn <- read.csv("meme-typeII_spec_dn.txt", sep = " ", header = F)
 typeIII_dn <- read.csv("meme-typeIII_spec_dn.txt", sep = " ", header = F)
 
 
-## pariwise
+## pariwise excluding
 todel_up <- c(intersect(typeI_up$V1, typeII_up$V1), intersect(typeI_up$V1, typeIII_up$V1), intersect(typeIII_up$V1, typeII_up$V1))
 todel_dn <- c(intersect(typeI_dn$V1, typeII_dn$V1), intersect(typeI_dn$V1, typeIII_dn$V1), intersect(typeIII_dn$V1, typeII_dn$V1))
 
@@ -39,6 +39,3 @@ for (i in 1:length(allspec)) {
     write.table(allspec[[i]], file = paste0("meme-", names(allspec[i]),"_fin.txt"), quote = F, row.names = F, col.names = F, sep = "\t")
 }
 
-
-### pairwise-overlapped motifs
-## type I vs II

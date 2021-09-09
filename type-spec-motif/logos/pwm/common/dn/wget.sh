@@ -14,6 +14,7 @@ wget -c https://hocomoco11.autosome.ru/final_bundle/hocomoco11/full/HUMAN/mono/p
 # KLF12_HUMAN.H11MO.0.C
 wget -c https://hocomoco11.autosome.ru/final_bundle/hocomoco11/full/HUMAN/mono/pcm/KLF12_HUMAN.H11MO.0.C.pcm
 
+# get pfm instead, and -O names_
 # KLF16_MA0741.1
 wget -c http://jaspar.genereg.net/api/v1/matrix/MA0741.1.meme
 

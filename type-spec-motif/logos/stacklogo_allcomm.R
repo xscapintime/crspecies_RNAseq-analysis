@@ -1,6 +1,7 @@
 # plot motif logos
 # common ones | homer & meme
-# ------------------
+# type I, II, III
+# ----------------------------
 
 library(motifStack)
 #library(universalmotif)
