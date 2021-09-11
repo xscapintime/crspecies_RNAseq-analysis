@@ -24,15 +24,6 @@ homer_novo <- lapply(files_novo, function(file) { read.csv(paste0("../homer/", f
 names(homer_novo) <- unlist(lapply(X = files_novo, FUN = function(x) {return(strsplit(x, split = "_MotifOutput")[[1]][1])}))
 
 
-### list res
-# typeI_up_idx <- union(homer_known[["typeI_up"]]$Motif.Name, homer_novo[["typeI_up"]]$Best.Match.Details)
-# typeII_up_idx <- union(homer_known[["typeII_up"]]$Motif.Name, homer_novo[["typeII_up"]]$Best.Match.Details)
-# typeIII_up_idx <- union(homer_known[["typeIII_up"]]$Motif.Name, homer_novo[["typeIII_up"]]$Best.Match.Details)
-
-# typeI_dn_idx <- union(homer_known[["typeI_dn"]]$Motif.Name, homer_novo[["typeI_dn"]]$Best.Match.Details)
-# typeII_dn_idx <- union(homer_known[["typeII_dn"]]$Motif.Name, homer_novo[["typeII_dn"]]$Best.Match.Details)
-# typeIII_dn_idx <- union(homer_known[["typeIII_dn"]]$Motif.Name, homer_novo[["typeIII_dn"]]$Best.Match.Details)
-
 
 typeI_up <- full_join(homer_known[["typeI_up"]][c("Motif.Name","P.value")],
                     homer_novo[["typeI_up"]][c("Best.Match.Details", "P.value")],
