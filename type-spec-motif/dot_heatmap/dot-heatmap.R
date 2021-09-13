@@ -16,8 +16,6 @@ names(homer) <- unlist(lapply(X = files, FUN = function(x) {return(strsplit(x, s
 ## maybe no de novo result
 typespec <- lapply(homer[-(1:2)], function(x) select(x, `Motif.Name`, `P.value.known`, `percent.known`) %>% na.omit)
 
-typespec <- lapply(typespec, function(x) x %>% mutate(group = names(x)))
-
 typespec <- Map(function(dat, grp) cbind(dat, group = grp), typespec,
                 unlist(lapply(X = names(typespec), FUN = function(x) {return(strsplit(x, split = "homer-")[[1]][2])})))
 
@@ -124,7 +122,7 @@ dat %>% mutate(`P-value (-log10)` = -log10(P.value.known)) %>% filter(across(gro
         labels = rev(c("Type I up", "Type II up", "Type III up"))) +
     guides(size = guide_legend(title = "% Motif in Target"))
 
-ggsave("motif_dotplot_up.pdf", width = 9, height = 5)
+ggsave("motif_dotplot_up.pdf", width = 10, height = 5)
 
 
 # down only
@@ -143,4 +141,4 @@ dat %>% mutate(`P-value (-log10)` = -log10(P.value.known)) %>% filter(across(gro
         labels = rev(c("Type I down", "Type II down", "Type III down"))) +
     guides(size = guide_legend(title = "% Motif in Target"))
 
-ggsave("motif_dotplot_dn.pdf", width = 9, height = 5)
+ggsave("motif_dotplot_dn.pdf", width = 10, height = 5)
