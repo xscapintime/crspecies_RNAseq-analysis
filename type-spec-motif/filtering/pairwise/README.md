@@ -1,0 +1,2 @@
+- seems don't need pairwise intersetion
+- *fin* are specifc motif list excluded pairwise overlapped motif

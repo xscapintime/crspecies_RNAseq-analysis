@@ -69,5 +69,5 @@ allspec <- list(typeI_up, typeII_up, typeIII_up, typeI_dn, typeII_dn, typeIII_dn
 names(allspec) <- c("typeI_up", "typeII_up", "typeIII_up", "typeI_dn", "typeII_dn", "typeIII_dn")
 
 for (i in 1:length(allspec)) {
-    write.table(allspec[[i]], file = paste0("homer-", names(allspec[i]),"_fin.txt"), quote = F, row.names = F, col.names = F, sep = "\t")
+    write.table(allspec[[i]], file = paste0("homer-", names(allspec[i]),".txt"), quote = F, row.names = F, col.names = T, sep = "\t")
 }
