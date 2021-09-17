@@ -10,48 +10,6 @@ library(tidyverse)
 # load table
 load("denovo_motif_all.Rdata")
 
-# change the name to human orthologs
-dat_novo$ortholog <- toupper(dat_novo$name)
-
-dat_novo$ortholog[grepl("BZIP", dat_novo$ortholog)] <- "bZIP_CREB"
-dat_novo$ortholog[grepl("TATA", dat_novo$ortholog)] <- "TATA-Box"
-
-
-# TF family, the solo one goes solo
-regx <- c("^ARNT", "^ATF|^BATF", "^BCL", "^CEBP", "^DMRT", "^DUX", "^E2F", "^EOMES", "^ESR", "^ETS|^ETV", "^FOX", "^GATA", "^HIF",
-            "^HNF", "^HOX", "^IRF", "KLF", "^MAF", "^MEF", "^MYC","MYB", "^NFAT", "^NKX", "^NR2", "^NRF", "^RAX", "^PRDM", "^RAR",
-            "^RFX", "^RUNX", "^SIX", "^SMAD", "^SOX", "^SP", "^SPDEF", "^TBX", "^TCF", "^TEAD", "^ZBTB", "^ZFP", "^ZNF|^ZKSCAN|^ZSCAN")
-
-fam <-  c("ARNT", "ATF", "BCL", "CEBP", "DMRT", "DUX", "E2F", "EOMES", "ESR", "ETS", "FOX", "GATA","HIF",
-            "HNF", "HOX", "IRF", "KLF", "MAF", "MEF", "MYC", "MYB", "NFAT", "NKX", "NR2", "NRF", "RAX", "PRDM", "RAR",
-            "RFX", "RUNX", "SIX", "SMAD", "SOX", "SP", "SPDEF", "TBX", "TCF", "TEAD", "ZBTB", "ZFP", "ZNF")
-
-dat_novo$fam <- dat_novo$ortholog
-for (i in 1:length(regx)) {
-    dat_novo$fam[grepl(regx[i], dat_novo$ortholog)] <- fam[i]
-}
-
-# split 1 and 2,3
-dat_novo$type <- unlist(lapply(X = as.character(dat_novo$group), FUN = function(x) {return(strsplit(x, split = "_")[[1]][1])}))
-dat_novo$typegroup <- ifelse(dat_novo$type == "typeI", "type1", "type23")
-
-
-# take the smallesr p-val one, if one group have duplicated motifs
-dat_novo <- dat_novo %>% group_by(group, name) %>% filter(P.value == min(P.value))
-
-
-# group by fam, oder by pval and percentage
-tf_order <- (dat_novo %>% group_by(typegroup, fam) %>% arrange(P.value, desc(percent), .by_group = T))$ortholog %>% unique()
-dat_novo$ortholog <- factor(dat_novo$ortholog, levels = tf_order)
-
-
-# make TF family factors
-fam_order <- (dat_novo %>% group_by(typegroup, fam) %>% summarise(mean(percent), min(P.value)) %>%
-    arrange(`min(P.value)`, desc(`mean(percent)`), .by_group = T))$fam %>% unique()
-dat_novo$fam <- factor(dat_novo$fam, levels = fam_order)
-
-
-
 
 
 ### plot ###
@@ -90,6 +48,7 @@ dat_novo %>% mutate(`P-value (-log10)` = -log10(P.value)) %>% #filter(percent > 
 
 
 ggsave("motif_dotplot_novo_all.pdf", width = 16, height = 2.8)
+
 
 
 ## fig in the article
