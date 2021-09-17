@@ -7,44 +7,15 @@ rm(list = ls())
 library(tidyverse)
 
 ### load homer tables
-load("motif_all.Rdata")
+load("motif_known_all.Rdata")
 
 
 #### ==================================================== ####
 #### fig in the article
 # FOX, ATF, MYC, MYB, RUNX, HNF, PPAR, CEBP, E2F, HIF and KLF
+# sel <- c("FOX", "^AP-1", "MYC", "MYB", "RUNX", "HNF4a", "PPAR", "CEBP", "E2F", "HIF", "KLF")
 
-dat_sel <- dat %>% filter(across(Motif.Name, ~ grepl("^FOX|^Fox|^ATF|^Atf|^MYC|^Myc|^MYB|^Myb|^RUNX|^Runx|^HNF|^Hnf|^PPAR|^Ppar|^CEBP|^Cebp|^E2F|^E2f|^HIF|^Hif|^KLF|^Flf", .)))
-dat_sel$name <- unlist(lapply(X = dat_sel$tf, FUN = function(x) {return(strsplit(x, split = "\\(")[[1]][1])}))
-
-dat_sel$name[grepl("\\(", dat_sel$tf)] <- unlist(lapply(X = dat_sel$tf[grepl("\\(", dat_sel$tf)], FUN = function(x) {return(strsplit(x, split = "\\(")[[1]][1])}))
-dat_sel$name[!grepl("\\(", dat_sel$tf)] <- dat_sel$tf[!grepl("\\(", dat_sel$tf)]
-
-# if same TF and same group, take the one with higher percentage
-dat_sel <- dat_sel %>% group_by(group, name) %>% filter(percent == max(percent))
-
-# Tf family
-sel <- c("^FOX|^Fox", "^ATF|^Atf", "^MYC|^Myc","^MYB|^Myb","^RUNX|^Runx","^HNF|^Hnf","^PPAR|^Ppar","^CEBP|^Cebp","^E2F|^E2f","^HIF|^Hif","^KLF|^Flf")
-fam <- c("FOX",  "ATF", "MYC", "MYB", "RUNX", "HNF", "PPAR", "CEBP", "E2F", "HIF", "KLF")
-
-dat_sel$fam <- NA
-for (i in 1:length(sel)) {
-    dat_sel$fam[grepl(sel[i], dat_sel$name)] <- fam[i]
-}
-
-# de
-dat_sel$de <- unlist(lapply(X = as.character(dat_sel$group), FUN = function(x) {return(strsplit(x, split = "_")[[1]][2])}))
-
-# make TF family factors
-percent_mean <- (dat_sel %>% group_by(fam) %>% summarise(mean(percent), min(P.value)) %>% arrange(`min(P.value)`, desc(`mean(percent)`)))$fam
-dat_sel$fam <- factor(dat_sel$fam, levels = percent_mean)
-
-# change the name to human orthologs
-dat_sel$ortholog <- toupper(dat_sel$name)
-
-# oder by pval and percentage
-tf_order <- (dat_sel %>% group_by(fam, group) %>% arrange(desc(percent), P.value, .by_group = T))$ortholog %>% unique()
-dat_sel$ortholog <- factor(dat_sel$ortholog, levels = tf_order)
+dat_sel <- dat %>% filter(across(fam, ~ grepl("^FOX|ATF|^MYC|MYB|^RUNX|^HNF|^PPAR|^CEBP|^E2F|^HIF|^KLF", .)))
 
 
 
@@ -80,4 +51,4 @@ dat_sel %>% mutate(`P-value (-log10)` = -log10(P.value)) %>% #filter(percent > 1
     labs(size = "% Motif in Target", fill = bquote(-log["10"] (P-value))) +
     cowplot::panel_border(color  = "black", size = .8)
 
-ggsave("motif_dotplot_sel.pdf", width = 10.5, height = 2.8)
+ggsave("motif_dotplot_known_sel.pdf", width = 10.5, height = 2.8)

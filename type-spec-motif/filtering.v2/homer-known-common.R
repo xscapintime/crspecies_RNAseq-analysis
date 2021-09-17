@@ -24,7 +24,7 @@ names(homer_known) <- unlist(lapply(X = files_known, FUN = function(x) {return(s
 ## homer de novo
 homer_novo <- lapply(files_novo, function(file) { read.csv(paste0("../homer.v2/", file), sep = "\t", header = T) %>% filter(P.value < 0.01)})
 homer_novo <- lapply(homer_novo, function(x) mutate(x, percent = as.numeric(sub("%","",`X..of.Targets`))))
-homer_novo <- lapply(homer_novo, function(x) filter(x, P.value < 0.01 & score > 0.8))# & percent >= 10))
+homer_novo <- lapply(homer_novo, function(x) filter(x, P.value < 0.01)) #& score > 0.8))# & percent >= 10))
 names(homer_novo) <- unlist(lapply(X = files_novo, FUN = function(x) {return(strsplit(x, split = "_MotifOutput")[[1]][1])}))
 
 
