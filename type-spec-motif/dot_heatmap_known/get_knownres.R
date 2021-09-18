@@ -1,5 +1,6 @@
 # homer known result
 # get motif name, p-val, percent
+# need to merge up and dn
 # ------------------------------------
 
 rm(list = ls())
@@ -28,11 +29,6 @@ dat_kn <- Reduce(rbind, homer_known)
 dat_kn$group <- factor(dat_kn$group, levels = c("typeI_up", "typeII_up", "typeIII_up", "typeI_dn", "typeII_dn", "typeIII_dn"))
 
 
-# split 1 and 2,3
-dat_kn$type <- unlist(lapply(X = as.character(dat_kn$group), FUN = function(x) {return(strsplit(x, split = "_")[[1]][1])}))
-dat_kn$typegroup <- ifelse(dat_kn$type == "typeI", "type1", "type23")
-
-
 # dealing with names
 dat_kn$tf <- unlist(lapply(X = dat_kn$Motif.Name, FUN = function(x) {return(strsplit(x, split = "/")[[1]][1])}))
 dat_kn$name <- unlist(lapply(X = dat_kn$tf, FUN = function(x) {return(strsplit(x, split = "\\(")[[1]][1])}))
@@ -46,12 +42,12 @@ dat_kn$ortholog[grepl("BHLHE40", dat_kn$ortholog)] <- "bHLHE40"
 dat_kn$ortholog[grepl("BHLHE41", dat_kn$ortholog)] <- "bHLHE41"
 
 dat_kn$ortholog[grepl("C-JUN-CRE", dat_kn$ortholog)] <- "c-JUN-CRE"
+
 dat_kn$ortholog[grepl("C-MYC", dat_kn$ortholog)] <- "c-MYC"
 
 dat_kn$ortholog[grepl("PIT1+1BP", dat_kn$ortholog)] <- "Pit1+1bp"
 
 dat_kn$ortholog[grepl("RONIN", dat_kn$ortholog)] <- "Ronin"
-
 
 
 # Tf family
@@ -71,22 +67,32 @@ for (i in 1:length(regx)) {
 dat_kn$fam <- ifelse(is.na(dat_kn$fam), dat_kn$ortholog, dat_kn$fam)
 
 
+# split 1 and 2,3
+dat_kn$type <- unlist(lapply(X = as.character(dat_kn$group), FUN = function(x) {return(strsplit(x, split = "_")[[1]][1])}))
+dat_kn$type <- factor(dat_kn$type, levels = c("typeI", "typeII", "typeIII"))
+
+dat_kn$typegroup <- ifelse(dat_kn$type == "typeI", "type1", "type23")
+
+
+# merge type up dn to type deg
+dat_kn <- dat_kn %>% group_by(type, ortholog) %>% filter(P.value == min(P.value))
+
 # take the smallest p-val one, if one group have duplicated motifs
-dat_kn <- dat_kn %>% group_by(group, name) %>% filter(P.value == min(P.value))
+# dat_kn <- dat_kn %>% group_by(group, name) %>% filter(P.value == min(P.value))
 
 
 ## order
-# TF order within a family
-# group by typegroup and fam, order by pval and percentage
-tf_order <- (dat_kn %>% group_by(typegroup, fam) %>% arrange(P.value, desc(percent), .by_group = T))$ortholog %>% unique()
-dat_kn$ortholog <- factor(dat_kn$ortholog, levels = tf_order)
-
-
 # family order, by mean of percentage and the smallest p-val in the family
 # make TF family factors
 fam_order <- (dat_kn %>% group_by(typegroup, fam) %>% summarise(mean(percent), min(P.value)) %>%
     arrange(`min(P.value)`, desc(`mean(percent)`), .by_group = T))$fam %>% unique()
 dat_kn$fam <- factor(dat_kn$fam, levels = fam_order)
+
+# TF order within a family
+# group by typegroup and fam, order by pval and percentage
+tf_order <- (dat_kn %>% group_by(fam) %>%
+    arrange(P.value, mean(percent), .by_group = T))$ortholog %>% unique()
+dat_kn$ortholog <- factor(dat_kn$ortholog, levels = tf_order)
 
 
 
